@@ -4,20 +4,14 @@ import re
 from dotenv import load_dotenv
 import os
 import markdown2
+from datetime import datetime
+import pytz
 
 load_dotenv()
 
 app = Flask(__name__)
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-# def format_text(text):
-#     text = re.sub(r'(\*\*|__)(.*?)\1', r'<strong>\2</strong>', text)
-#     text = re.sub(r'(\*|_)(.*?)\1', r'<em>\2</em>', text) 
-#     text = re.sub(r'^(#{1,6})\s*(.*?)\s*$', r'<h3>\2</h3>', text, flags=re.MULTILINE) 
-#     text = re.sub(r'^\s*\*\s+(.*)$', r'<li>\1</li>', text, flags=re.MULTILINE)  
-#     text = re.sub(r'\n+', r'<br>', text)  
-#     text = re.sub(r'<br>\s*<br>', r'<br>', text)  
-#     return text
 
 def format_text(text):
     """Преобразует Markdown-текст в аккуратный HTML."""
@@ -25,11 +19,13 @@ def format_text(text):
         text,
         extras=["fenced-code-blocks", "tables", "break-on-newline", "strike", "underline"]
     )
-    # Добавляем лёгкое оформление списков и заголовков
     html = html.replace("<ul>", '<ul style="margin-left:20px;">')
     html = html.replace("<h2>", '<h2 style="margin-top:25px;">')
     html = html.replace("<h3>", '<h3 style="margin-top:20px;">')
     return html
+
+def get_local_time():
+    return datetime.now(pytz.timezone('Europe/Moscow'))
 
 def generate_route(interests, time, location):
     prompt = f"""
@@ -38,17 +34,21 @@ def generate_route(interests, time, location):
 - Интересы: {interests}
 - Время на прогулку: {time} часов
 - Текущее местоположение: {location}
+- Местное время: {get_local_time()}
 
 Составь персональный план прогулки:
 1. Подбери 3–5 реальных мест в Нижнем Новгороде, которые соответствуют интересам пользователя.
 2. Объясни, почему ты выбрал каждое место.
 3. Предложи логичный маршрут и примерный таймлайн (в часах).
 4. Сформулируй ответ красиво и понятно
-
-Сформулируй ответ в **Markdown**, используй:
+5. Ты должен учитывать по времени, что человек должен еще добраться до места назначения. 
+6.Сформулируй ответ в **Markdown**, используй:
 - заголовки `##`, `###` для разделов,
+- не используй нумерацию для разделов,
 - жирный шрифт для мест и времени,
 - списки для маршрутов.
+7. Не спрашивай в конце, хочет ли пользователь чего то, закончи свой ответ практическими рекомендациями.
+
 """
 
     response = client.chat.completions.create(
