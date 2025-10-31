@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request
 from openai import OpenAI
+import re
 from dotenv import load_dotenv
 import os
 
@@ -7,6 +8,15 @@ load_dotenv()
 
 app = Flask(__name__)
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+def format_text(text):
+    text = re.sub(r'(\*\*|__)(.*?)\1', r'<strong>\2</strong>', text)
+    text = re.sub(r'(\*|_)(.*?)\1', r'<em>\2</em>', text) 
+    text = re.sub(r'^(#{1,6})\s*(.*?)\s*$', r'<h3>\2</h3>', text, flags=re.MULTILINE) 
+    text = re.sub(r'^\s*\*\s+(.*)$', r'<li>\1</li>', text, flags=re.MULTILINE)  
+    text = re.sub(r'\n+', r'<br>', text)  
+    text = re.sub(r'<br>\s*<br>', r'<br>', text)  
+    return text
 
 def generate_route(interests, time, location):
     prompt = f"""
@@ -30,7 +40,8 @@ def generate_route(interests, time, location):
         temperature=0.8,
     )
     
-    return response.choices[0].message.content.strip()
+    return format_text(response.choices[0].message.content.strip())
+    
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -39,7 +50,7 @@ def index():
         time = request.form["time"]
         location = request.form["location"]
         plan = generate_route(interests, time, location)
-        return render_template("index.html", plan=plan)
+        return render_template("index.html", plan=plan, yandex_api=os.getenv("YANDEX_API_KEY"))
     return render_template("index.html", plan=None)
 
 if __name__ == "__main__":
