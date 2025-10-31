@@ -1,155 +1,205 @@
-<!-- <!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Туристический гид по Нижнему Новгороду</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU&amp;apikey={{ yandex_api }}" type="text/javascript"></script>
-    
-    <style>
-        #map {
-            height: 400px;
-            width: 100%;
-            margin-top: 20px;
-            border-radius: 8px;
-        }
-        .plan {
-            margin-top: 20px;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background-color: #f9f9f9;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        .plan h3 {
-            font-size: 1.5em;
-            margin-bottom: 10px;
-        }
-        .plan ul {
-            list-style-type: disc;
-            margin-left: 20px;
-        }
-        .plan p {
-            font-size: 1.1em;
-            line-height: 1.6;
-        }
-        .plan .intro {
-            font-size: 2em;
-            font-weight: bold;
-            margin-bottom: 20px;
-            color: #2c3e50;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>Персональный туристический гид по Нижнему Новгороду</h1>
-        <form method="POST">
-            <label for="interests">Интересы:</label>
-            <input type="text" id="interests" name="interests" required>
-
-            <label for="time">Время на прогулку (в часах):</label>
-            <input type="number" id="time" name="time" required>
-
-            <label for="location">Где ты сейчас находишься:</label>
-            <input type="text" id="location" name="location" required>
-
-            <button type="submit">Получить маршрут</button>
-        </form>
-
-        {% if plan %}
-            <h2>Твой персональный маршрут:</h2>
-            <div class="plan">
-                <p class="intro">План был успешно составлен! Вот ваш персональный маршрут по Нижнему Новгороду:</p>
-                <div>{{ plan | safe }}</div>
-            </div>
-            <div id="map"></div>
-        {% endif %}
-    </div>
-
-    <script type="text/javascript">
-        ymaps.ready(function () {
-            var map = new ymaps.Map('map', {
-                center: [56.3287, 44.002],  
-                zoom: 13,
-                controls: ['zoomControl', 'typeSelector']
-            });
-
-            var placemark = new ymaps.Placemark(
-                [56.3287, 44.002], 
-                {
-                    iconContent: 'Старт маршрута',
-                    balloonContent: 'Вы здесь'
-                },
-                {
-                    preset: 'twirl#blueStretchyIcon'
-                }
-            );
-            map.geoObjects.add(placemark);
-        });
-    </script>
-</body>
-</html> -->
-
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Туристический гид по Нижнему Новгороду</title>
+    <title>AI Гид по Нижнему Новгороду - Ваш персональный путеводитель</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU&amp;apikey={{ yandex_api }}" type="text/javascript"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <h1>Персональный туристический гид по Нижнему Новгороду</h1>
-        <form method="POST">
-            <label for="interests">Интересы:</label>
-            <input type="text" id="interests" name="interests" required>
-
-            <label for="time">Время на прогулку (в часах):</label>
-            <input type="number" id="time" name="time" required>
-
-            <label for="location">Где ты сейчас находишься:</label>
-            <input type="text" id="location" name="location" required>
-
-            <button type="submit">Получить маршрут</button>
-        </form>
-
-        {% if plan %}
-            <h2>Твой персональный маршрут:</h2>
-            <div class="plan">
-                <div class="plan-content">
-                    <p class="intro">План был успешно составлен! Вот ваш персональный маршрут по Нижнему Новгороду:</p>
-                    <div>{{ plan | safe }}</div>
-                </div>
-            </div>
-            <div id="map"></div>
-        {% endif %}
+    <div class="animated-background">
+        <div class="gradient-orb orb-1"></div>
+        <div class="gradient-orb orb-2"></div>
+        <div class="gradient-orb orb-3"></div>
     </div>
 
+    <div class="main-container">
+        <header class="hero-section">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <span class="badge-icon">🤖</span>
+                    <span>AI-Powered Туризм</span>
+                </div>
+                <h1 class="hero-title">
+                    Откройте для себя<br>
+                    <span class="gradient-text">Нижний Новгород</span>
+                </h1>
+                <p class="hero-description">
+                    Персональный AI-гид создаст уникальный маршрут специально для вас,
+                    учитывая ваши интересы и время
+                </p>
+            </div>
+        </header>
+
+        <div class="form-card glass-effect">
+            <div class="form-header">
+                <h2>Создайте свой маршрут</h2>
+                <p>Заполните информацию и получите персональный план прогулки</p>
+            </div>
+
+            <form method="POST" id="routeForm">
+                <div class="input-group">
+                    <label for="interests">
+                        <span class="label-icon">✨</span>
+                        Ваши интересы
+                    </label>
+                    <input type="text" id="interests" name="interests" placeholder="Например: история, архитектура, еда, искусство..." required autocomplete="off">
+                    <div class="input-underline"></div>
+                </div>
+
+                <div class="input-group">
+                    <label for="time">
+                        <span class="label-icon">⏱️</span>
+                        Время на прогулку
+                    </label>
+                    <input type="number" id="time" name="time" placeholder="Укажите количество часов" min="1" max="12" required autocomplete="off">
+                    <div class="input-underline"></div>
+                    <small class="input-hint">От 1 до 12 часов</small>
+                </div>
+
+                <div class="input-group">
+                    <label for="location">
+                        <span class="label-icon">📍</span>
+                        Ваше текущее местоположение
+                    </label>
+                    <input type="text" id="location" name="location" placeholder="Например: Кремль, площадь Минина..." required autocomplete="off">
+                    <div class="input-underline"></div>
+                </div>
+
+                <button type="submit" id="submitBtn" class="submit-btn">
+                    <span class="btn-text">Создать маршрут</span>
+                    <span class="btn-icon">→</span>
+                </button>
+            </form>
+
+            <div id="loader" class="loader" style="display: none;">
+                <div class="loader-spinner"></div>
+                <p class="loader-text">Создаю ваш персональный маршрут...</p>
+                <div class="loader-dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+
+        {% if plan %}
+        <div id="results" class="results-section">
+            <div class="plan-card glass-effect">
+                <div class="card-header">
+                    <div class="header-icon-wrapper">
+                        <span class="header-icon">🗺️</span>
+                    </div>
+                    <div>
+                        <h2>Ваш персональный маршрут</h2>
+                        <p class="card-subtitle">Создан специально для вас с помощью AI</p>
+                    </div>
+                </div>
+
+                <div class="plan-content">
+                    {{ plan | safe }}
+                </div>
+
+                <div class="card-footer">
+                    <button onclick="window.print()" class="secondary-btn">
+                        <span>🖨️</span>
+                        Распечатать маршрут
+                    </button>
+                    <button onclick="shareRoute()" class="secondary-btn">
+                        <span>📤</span>
+                        Поделиться
+                    </button>
+                </div>
+            </div>
+
+            <div class="map-card glass-effect">
+                <div class="card-header">
+                    <div class="header-icon-wrapper">
+                        <span class="header-icon">🌍</span>
+                    </div>
+                    <div>
+                        <h2>Интерактивная карта</h2>
+                        <p class="card-subtitle">Визуализация вашего маршрута</p>
+                    </div>
+                </div>
+                <div id="map" class="map-container"></div>
+            </div>
+        </div>
+        {% endif %}
+
+        <footer class="footer">
+            <p>
+                Создано с 💙 для любителей путешествий
+                <span class="separator">•</span>
+                Powered by AI
+            </p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+    {% if plan %}
     <script type="text/javascript">
         ymaps.ready(function () {
             var map = new ymaps.Map('map', {
-                center: [56.3287, 44.002],  
+                center: [56.3287, 44.002],
                 zoom: 13,
-                controls: ['zoomControl', 'typeSelector']
+                controls: ['zoomControl', 'typeSelector', 'fullscreenControl']
+            }, {
+                searchControlProvider: 'yandex#search'
             });
 
+            map.behaviors.enable('scrollZoom');
+
             var placemark = new ymaps.Placemark(
-                [56.3287, 44.002], 
+                [56.3287, 44.002],
                 {
-                    iconContent: 'Старт маршрута',
-                    balloonContent: 'Вы здесь'
+                    iconContent: 'Старт',
+                    balloonContent: '<strong>Начало маршрута</strong><br>Ваше текущее местоположение'
                 },
                 {
-                    preset: 'twirl#blueStretchyIcon'
+                    preset: 'islands#redStretchyIcon',
+                    draggable: false
                 }
             );
+
             map.geoObjects.add(placemark);
+
+            setTimeout(function() {
+                placemark.balloon.open();
+            }, 1000);
         });
+
+        function shareRoute() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Мой маршрут по Нижнему Новгороду',
+                    text: 'Посмотрите мой персональный маршрут, созданный AI-гидом!',
+                    url: window.location.href
+                }).catch(() => {});
+            } else {
+                navigator.clipboard.writeText(window.location.href);
+                showNotification('Ссылка скопирована в буфер обмена!');
+            }
+        }
+
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => notification.classList.add('show'), 100);
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
     </script>
+    {% endif %}
 </body>
 </html>
