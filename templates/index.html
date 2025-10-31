@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -63,6 +63,68 @@
             <div class="plan">
                 <p class="intro">План был успешно составлен! Вот ваш персональный маршрут по Нижнему Новгороду:</p>
                 <div>{{ plan | safe }}</div>
+            </div>
+            <div id="map"></div>
+        {% endif %}
+    </div>
+
+    <script type="text/javascript">
+        ymaps.ready(function () {
+            var map = new ymaps.Map('map', {
+                center: [56.3287, 44.002],  
+                zoom: 13,
+                controls: ['zoomControl', 'typeSelector']
+            });
+
+            var placemark = new ymaps.Placemark(
+                [56.3287, 44.002], 
+                {
+                    iconContent: 'Старт маршрута',
+                    balloonContent: 'Вы здесь'
+                },
+                {
+                    preset: 'twirl#blueStretchyIcon'
+                }
+            );
+            map.geoObjects.add(placemark);
+        });
+    </script>
+</body>
+</html> -->
+
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Туристический гид по Нижнему Новгороду</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU&amp;apikey={{ yandex_api }}" type="text/javascript"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Персональный туристический гид по Нижнему Новгороду</h1>
+        <form method="POST">
+            <label for="interests">Интересы:</label>
+            <input type="text" id="interests" name="interests" required>
+
+            <label for="time">Время на прогулку (в часах):</label>
+            <input type="number" id="time" name="time" required>
+
+            <label for="location">Где ты сейчас находишься:</label>
+            <input type="text" id="location" name="location" required>
+
+            <button type="submit">Получить маршрут</button>
+        </form>
+
+        {% if plan %}
+            <h2>Твой персональный маршрут:</h2>
+            <div class="plan">
+                <div class="plan-content">
+                    <p class="intro">План был успешно составлен! Вот ваш персональный маршрут по Нижнему Новгороду:</p>
+                    <div>{{ plan | safe }}</div>
+                </div>
             </div>
             <div id="map"></div>
         {% endif %}

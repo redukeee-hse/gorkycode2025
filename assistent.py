@@ -3,20 +3,33 @@ from openai import OpenAI
 import re
 from dotenv import load_dotenv
 import os
+import markdown2
 
 load_dotenv()
 
 app = Flask(__name__)
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
+# def format_text(text):
+#     text = re.sub(r'(\*\*|__)(.*?)\1', r'<strong>\2</strong>', text)
+#     text = re.sub(r'(\*|_)(.*?)\1', r'<em>\2</em>', text) 
+#     text = re.sub(r'^(#{1,6})\s*(.*?)\s*$', r'<h3>\2</h3>', text, flags=re.MULTILINE) 
+#     text = re.sub(r'^\s*\*\s+(.*)$', r'<li>\1</li>', text, flags=re.MULTILINE)  
+#     text = re.sub(r'\n+', r'<br>', text)  
+#     text = re.sub(r'<br>\s*<br>', r'<br>', text)  
+#     return text
+
 def format_text(text):
-    text = re.sub(r'(\*\*|__)(.*?)\1', r'<strong>\2</strong>', text)
-    text = re.sub(r'(\*|_)(.*?)\1', r'<em>\2</em>', text) 
-    text = re.sub(r'^(#{1,6})\s*(.*?)\s*$', r'<h3>\2</h3>', text, flags=re.MULTILINE) 
-    text = re.sub(r'^\s*\*\s+(.*)$', r'<li>\1</li>', text, flags=re.MULTILINE)  
-    text = re.sub(r'\n+', r'<br>', text)  
-    text = re.sub(r'<br>\s*<br>', r'<br>', text)  
-    return text
+    """Преобразует Markdown-текст в аккуратный HTML."""
+    html = markdown2.markdown(
+        text,
+        extras=["fenced-code-blocks", "tables", "break-on-newline", "strike", "underline"]
+    )
+    # Добавляем лёгкое оформление списков и заголовков
+    html = html.replace("<ul>", '<ul style="margin-left:20px;">')
+    html = html.replace("<h2>", '<h2 style="margin-top:25px;">')
+    html = html.replace("<h3>", '<h3 style="margin-top:20px;">')
+    return html
 
 def generate_route(interests, time, location):
     prompt = f"""
@@ -31,6 +44,11 @@ def generate_route(interests, time, location):
 2. Объясни, почему ты выбрал каждое место.
 3. Предложи логичный маршрут и примерный таймлайн (в часах).
 4. Сформулируй ответ красиво и понятно
+
+Сформулируй ответ в **Markdown**, используй:
+- заголовки `##`, `###` для разделов,
+- жирный шрифт для мест и времени,
+- списки для маршрутов.
 """
 
     response = client.chat.completions.create(
