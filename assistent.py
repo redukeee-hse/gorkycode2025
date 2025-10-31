@@ -12,9 +12,7 @@ load_dotenv()
 app = Flask(__name__)
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-
 def format_text(text):
-    """Преобразует Markdown-текст в аккуратный HTML."""
     html = markdown2.markdown(
         text,
         extras=["fenced-code-blocks", "tables", "break-on-newline", "strike", "underline"]
@@ -24,42 +22,42 @@ def format_text(text):
     html = html.replace("<h3>", '<h3 style="margin-top:20px;">')
     return html
 
-def get_local_time():
-    return datetime.now(pytz.timezone('Europe/Moscow'))
+def get_local_time(timezone='Europe/Moscow'):
+    return datetime.now(pytz.timezone(timezone))
 
 def generate_route(interests, time, location):
     prompt = f"""
-Ты — туристический AI-гид по Нижнему Новгороду.
-Пользователь указал:
-- Интересы: {interests}
-- Время на прогулку: {time} часов
-- Текущее местоположение: {location}
-- Местное время: {get_local_time()}
+    Ты — туристический AI-гид по Нижнему Новгороду.
+    Пользователь указал:
+    - Интересы: {interests}
+    - Время на прогулку: {time} часов
+    - Текущее местоположение: {location}
+    - Местное время: {get_local_time()}
 
-Составь персональный план прогулки:
-1. Подбери 3–5 реальных мест в Нижнем Новгороде, которые соответствуют интересам пользователя.
-2. Объясни, почему ты выбрал каждое место.
-3. Предложи логичный маршрут и примерный таймлайн (в часах).
-4. Сформулируй ответ красиво и понятно
-5. Ты должен учитывать по времени, что человек должен еще добраться до места назначения. 
-6.Сформулируй ответ в **Markdown**, используй:
-- заголовки `##`, `###` для разделов,
-- не используй нумерацию для разделов,
-- жирный шрифт для мест и времени,
-- списки для маршрутов.
-7. Не спрашивай в конце, хочет ли пользователь чего то, закончи свой ответ практическими рекомендациями.
+    Составь персональный план прогулки:
+    1. Подбери 3–5 реальных мест в Нижнем Новгороде, которые соответствуют интересам пользователя.
+    2. Объясни, почему ты выбрал каждое место.
+    3. Предложи логичный маршрут и примерный таймлайн (в часах).
+    4. Сформулируй ответ красиво и понятно
+    5. Ты должен учитывать по времени, что человек должен еще добраться до места назначения. 
+    6. Сформулируй ответ в **Markdown**, используй:
+    - заголовки `##`, `###` для разделов,
+    - не используй нумерацию для разделов,
+    - жирный шрифт для мест и времени,
+    - списки для маршрутов.
+    7. Не спрашивай в конце, хочет ли пользователь чего-то, закончи свой ответ практическими рекомендациями.
+    """
 
-"""
-
-    response = client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[{"role": "system", "content": "Ты — дружелюбный гид по Нижнему Новгороду."},
-                  {"role": "user", "content": prompt}],
-        temperature=0.8,
-    )
-    
-    return format_text(response.choices[0].message.content.strip())
-    
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[{"role": "system", "content": "Ты — дружелюбный гид по Нижнему Новгороду."},
+                      {"role": "user", "content": prompt}],
+            temperature=0.8,
+        )
+        return format_text(response.choices[0].message.content.strip())
+    except Exception as e:
+        return f"Произошла ошибка при запросе к OpenAI: {str(e)}"
 
 @app.route("/", methods=["GET", "POST"])
 def index():
