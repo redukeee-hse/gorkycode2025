@@ -14,7 +14,7 @@ docker pull artemst2006d/nnqwer
 
 docker run -d --name guide  -p 5000:5000 artemst2006d/nnqwer
 ```
-
+Если выдает ошибку *You exceeded your current quota, please check your plan and billing details*, просьба обратиться к @redukeee для дальнейшей замены *OPENAI_API_KEY*
 
 ---
 
