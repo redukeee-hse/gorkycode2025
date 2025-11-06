@@ -10,7 +10,11 @@ import pytz
 load_dotenv()
 
 app = Flask(__name__)
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+client = OpenAI(
+    base_url="http://127.0.0.1:3300/v1",  
+    api_key="lm-studio"  
+)
 
 def format_text(text):
     html = markdown2.markdown(
@@ -46,18 +50,22 @@ def generate_route(interests, time, location):
     - жирный шрифт для мест и времени,
     - списки для маршрутов.
     7. Не спрашивай в конце, хочет ли пользователь чего-то, закончи свой ответ практическими рекомендациями.
+    8. Не повторяй одно и то же предложение дважды.
     """
 
     try:
         response = client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[{"role": "system", "content": "Ты — дружелюбный гид по Нижнему Новгороду."},
-                      {"role": "user", "content": prompt}],
+            model="qwen3-4b-instruct",  
+            messages=[
+                {"role": "system", "content": "Ты — дружелюбный гид по Нижнему Новгороду."},
+                {"role": "user", "content": prompt}
+            ],
             temperature=0.8,
+            max_tokens=1500  
         )
         return format_text(response.choices[0].message.content.strip())
     except Exception as e:
-        return f"Произошла ошибка при запросе к OpenAI: {str(e)}"
+        return f"Произошла ошибка при запросе к локальному ИИ: {str(e)}"
 
 @app.route("/", methods=["GET", "POST"])
 def index():
